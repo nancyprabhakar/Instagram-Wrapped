@@ -1,0 +1,37 @@
+{
+  "name": "view-value",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VIEW / VALUE — an independent Instagram concept film built with Remotion.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nancyprabhakar/Instagram-Wrapped.git"
+  },
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && tsx scripts/check-chart-math.ts",
+    "render": "remotion render src/index.ts ViewValue out/view-value.mp4",
+    "cover": "remotion still src/index.ts Cover out/view-value-cover.png --frame=0",
+    "stills": "node scripts/render-stills.mjs",
+    "build": "npm run check && npm run render && npm run cover"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@remotion/cli": "4.0.540",
+    "@remotion/fonts": "4.0.540",
+    "@remotion/media": "4.0.540",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "4.0.540"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.540",
+    "@remotion/renderer": "^4.0.540",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
