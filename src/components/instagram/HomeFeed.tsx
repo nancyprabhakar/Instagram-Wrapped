@@ -1,4 +1,6 @@
 import React from "react";
+import { Img, staticFile } from "remotion";
+import { FEED_POST } from "../../media";
 import { COLORS, FONT, IG_GRADIENT_CSS } from "../../theme";
 import { SCREEN } from "../../layout";
 import {
@@ -11,15 +13,17 @@ import {
   SendIcon,
 } from "./Icons";
 
-const STORIES = [
+type StoryProps = { name: string; colors: string[]; own?: boolean; img?: string };
+
+const STORIES: StoryProps[] = [
   { name: "Your story", colors: ["#F2C9A8", "#D98A6C"], own: true },
-  { name: "kai.travels", colors: ["#9CC3FF", "#1F74F2"] },
-  { name: "maya.eats", colors: ["#FFC2B8", "#FF6A55"] },
-  { name: "studio.oro", colors: ["#9BE6DC", "#0FAE9E"] },
-  { name: "lola.lols", colors: ["#FFE39A", "#F7B500"] },
+  { name: "kai.travels", colors: ["#9CC3FF", "#1F74F2"], img: "travel-lagoon.jpg" },
+  { name: "maya.eats", colors: ["#FFC2B8", "#FF6A55"], img: "food-cookies.jpg" },
+  { name: "glow.lab", colors: ["#D9B8FF", "#8E3BF5"], img: "beauty-lipgloss.jpg" },
+  { name: "lola.lols", colors: ["#FFE39A", "#F7B500"], img: "comedy-dog.jpg" },
 ];
 
-const Story: React.FC<(typeof STORIES)[number]> = ({ name, colors, own }) => (
+const Story: React.FC<StoryProps> = ({ name, colors, own, img }) => (
   <div style={{ width: 74, display: "flex", flexDirection: "column", alignItems: "center", gap: 5 }}>
     <div
       style={{
@@ -40,8 +44,16 @@ const Story: React.FC<(typeof STORIES)[number]> = ({ name, colors, own }) => (
           border: own ? "none" : "2.5px solid #fff",
           boxSizing: "border-box",
           background: `linear-gradient(140deg, ${colors[0]}, ${colors[1]})`,
+          overflow: "hidden",
         }}
-      />
+      >
+        {img ? (
+          <Img
+            src={staticFile(`reels/${img}`)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : null}
+      </div>
       {own ? (
         <div
           style={{
@@ -112,24 +124,17 @@ export const HomeHeader: React.FC = () => (
   </div>
 );
 
-/** Original placeholder photograph: an abstract coastal sunset. */
-const PostArt: React.FC = () => (
-  <svg viewBox="0 0 412 412" width={SCREEN.w} height={SCREEN.w} style={{ display: "block" }}>
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#8DB8FF" />
-        <stop offset="0.55" stopColor="#FFC7A6" />
-        <stop offset="1" stopColor="#FF9C7A" />
-      </linearGradient>
-    </defs>
-    <rect width="412" height="412" fill="url(#sky)" />
-    <circle cx="270" cy="210" r="56" fill="#FFE2A8" />
-    <path d="M0 250 Q 90 200 170 236 T 412 222 V412 H0Z" fill="#3F7BE0" />
-    <path d="M0 292 Q 120 262 230 290 T 412 282 V412 H0Z" fill="#1F5FCC" />
-    <path d="M0 336 Q 140 316 260 336 T 412 332 V412 H0Z" fill="#174AA6" />
-    <rect x="60" y="150" width="10" height="110" rx="5" fill="#2E2A3D" opacity="0.7" />
-    <path d="M65 150 q -34 4 -46 26 M65 150 q 34 4 46 26 M65 150 q -20 -14 -42 -10 M65 150 q 22 -14 42 -10" stroke="#2E2A3D" strokeWidth="7" fill="none" strokeLinecap="round" opacity="0.7" />
-  </svg>
+const PostImage: React.FC = () => (
+  <Img
+    src={FEED_POST.src}
+    style={{
+      display: "block",
+      width: SCREEN.w,
+      height: SCREEN.w,
+      objectFit: "cover",
+      objectPosition: FEED_POST.position,
+    }}
+  />
 );
 
 export const HomeFeed: React.FC = () => (
@@ -180,12 +185,12 @@ export const HomeFeed: React.FC = () => (
           />
         </div>
         <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-          <span style={{ fontWeight: 600, fontSize: 14 }}>kai.travels</span>
-          <span style={{ fontSize: 12, color: "#000" }}>Lisbon, Portugal</span>
+          <span style={{ fontWeight: 600, fontSize: 14 }}>{FEED_POST.handle}</span>
+          <span style={{ fontSize: 12, color: "#000" }}>{FEED_POST.location}</span>
         </div>
         <MoreIcon size={22} />
       </div>
-      <PostArt />
+      <PostImage />
       <div style={{ display: "flex", alignItems: "center", padding: "11px 14px 6px", gap: 16 }}>
         <HeartIcon size={26} strokeWidth={2} />
         <CommentIcon size={25} strokeWidth={2} />
@@ -195,7 +200,7 @@ export const HomeFeed: React.FC = () => (
       </div>
       <div style={{ padding: "2px 14px", fontSize: 14, fontWeight: 600 }}>2,481 likes</div>
       <div style={{ padding: "3px 14px", fontSize: 14 }}>
-        <span style={{ fontWeight: 600 }}>kai.travels</span> golden hour over the river
+        <span style={{ fontWeight: 600 }}>{FEED_POST.handle}</span> {FEED_POST.caption}
       </div>
     </div>
   </div>

@@ -118,8 +118,8 @@ const WrappedIntro: React.FC<{ frame: number }> = ({ frame }) => {
               height={mix(cardH, cardW, g)}
               chrome={g < 0.2}
               radius={mix(16, cardW / 2, g)}
-              handle={["glow.lab", "kai.travels", "maya.eats", "lola.lols", "studio.oro"][idx]}
-              variant={idx}
+              variant={0}
+              tint={progress(frame, T.gatherStart + order * 2, T.gatherStart + order * 2 + 9)}
             />
           </div>
         );
@@ -130,16 +130,12 @@ const WrappedIntro: React.FC<{ frame: number }> = ({ frame }) => {
 
 // ——— Scene 2: fluid reel scroll, pause, pull back to an attention summary ———
 
-const REEL_SEQUENCE = [2, 0, 3, 1, 0, 2, 4, 0, 2, 3];
+// [category, image variant]; the scroll pauses on the Beauty hero image.
+const REEL_SEQUENCE: [number, number][] = [
+  [2, 0], [0, 1], [3, 0], [1, 0], [0, 2], [2, 1], [4, 0], [0, 0], [0, 3], [3, 1],
+];
 const STOP_INDEX = 7;
 const REEL = { w: SCREEN.w - 40, h: 500, gap: 14, top: CONTENT_TOP + 44 };
-const HANDLES: Record<number, string> = {
-  0: "glow.lab",
-  1: "kai.travels",
-  2: "maya.eats",
-  3: "lola.lols",
-  4: "studio.oro",
-};
 
 const ReelsReplay: React.FC<{ frame: number }> = ({ frame }) => {
   const scrollP = progress(frame, T.scrollStart, T.scrollStop, Easing.bezier(0.33, 0.0, 0.12, 1));
@@ -191,7 +187,7 @@ const ReelsReplay: React.FC<{ frame: number }> = ({ frame }) => {
             transform: `translateY(${-offset}px) scale(${listScale})`,
           }}
         >
-          {REEL_SEQUENCE.map((cat, i) => {
+          {REEL_SEQUENCE.map(([cat, variant], i) => {
             const y = i * (REEL.h + REEL.gap);
             if (y - offset > CONTENT_BOTTOM || y - offset + REEL.h < -REEL.top) return null;
             const isStop = i === STOP_INDEX;
@@ -209,8 +205,7 @@ const ReelsReplay: React.FC<{ frame: number }> = ({ frame }) => {
                   index={cat}
                   width={REEL.w}
                   height={REEL.h}
-                  variant={i}
-                  handle={HANDLES[cat]}
+                  variant={variant}
                   radius={20}
                 />
               </div>

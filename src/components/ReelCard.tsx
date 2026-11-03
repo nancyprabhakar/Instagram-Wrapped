@@ -1,5 +1,7 @@
 import React from "react";
+import { Img } from "remotion";
 import { CATEGORIES, FONT } from "../theme";
+import { reelImage, reelSrc } from "../media";
 import { HeartIcon, CommentIcon, SendIcon } from "./instagram/Icons";
 
 const shade = (hex: string, amount: number) => {
@@ -12,61 +14,6 @@ const shade = (hex: string, amount: number) => {
   return `rgb(${r}, ${g}, ${b})`;
 };
 
-/** Original abstract artwork for each category, drawn in a 100 × 160 box. */
-const Art: React.FC<{ index: number; variant: number }> = ({ index, variant }) => {
-  const c = CATEGORIES[index].color;
-  const light = shade(c, 0.55);
-  const lighter = shade(c, 0.78);
-  const dark = shade(c, -0.35);
-  const v = variant % 2;
-  switch (CATEGORIES[index].id) {
-    case "beauty":
-      return (
-        <g>
-          <circle cx={v ? 64 : 50} cy={62} r={34} fill={light} />
-          <circle cx={v ? 64 : 50} cy={62} r={22} fill={lighter} />
-          <rect x={v ? 18 : 70} y={84} width={14} height={44} rx={7} fill={dark} />
-          <rect x={v ? 18 : 70} y={76} width={14} height={16} rx={5} fill={lighter} />
-        </g>
-      );
-    case "travel":
-      return (
-        <g>
-          <circle cx={v ? 30 : 68} cy={52} r={18} fill={shade("#FFD166", 0.2)} />
-          <path d="M0 104 Q 25 84 50 100 T 100 96 V160 H0Z" fill={light} />
-          <path d="M0 122 Q 30 106 60 120 T 100 116 V160 H0Z" fill={lighter} />
-        </g>
-      );
-    case "food":
-      return (
-        <g>
-          <circle cx={50} cy={74} r={36} fill={lighter} />
-          <circle cx={50} cy={74} r={26} fill={light} />
-          <circle cx={v ? 42 : 58} cy={68} r={8} fill={dark} />
-          <circle cx={v ? 58 : 44} cy={82} r={6} fill={shade("#FFD166", 0.1)} />
-        </g>
-      );
-    case "comedy":
-      return (
-        <g>
-          <rect x={16} y={42} width={68} height={46} rx={23} fill={lighter} />
-          <path d="M34 86 L 30 102 L 46 88 Z" fill={lighter} />
-          <circle cx={36} cy={65} r={5} fill={dark} />
-          <circle cx={50} cy={65} r={5} fill={dark} />
-          <circle cx={64} cy={65} r={5} fill={dark} />
-        </g>
-      );
-    case "design":
-      return (
-        <g>
-          <path d="M26 128 V78 a24 24 0 0 1 48 0 V128 Z" fill={lighter} />
-          <rect x={v ? 18 : 58} y={40} width={24} height={24} rx={3} fill={light} />
-          <circle cx={v ? 72 : 30} cy={52} r={10} fill={dark} />
-        </g>
-      );
-  }
-};
-
 type Props = {
   index: number;
   width: number;
@@ -76,6 +23,8 @@ type Props = {
   chrome?: boolean;
   handle?: string;
   radius?: number;
+  /** 0–1 wash of the category colour over the photo (used as cards become pie slices). */
+  tint?: number;
   style?: React.CSSProperties;
 };
 
@@ -87,9 +36,11 @@ export const ReelCard: React.FC<Props> = ({
   chrome = true,
   handle,
   radius = 18,
+  tint = 0,
   style,
 }) => {
   const cat = CATEGORIES[index];
+  const img = reelImage(index, variant);
   const scale = width / 380;
   return (
     <div
@@ -99,24 +50,31 @@ export const ReelCard: React.FC<Props> = ({
         borderRadius: radius,
         overflow: "hidden",
         position: "relative",
-        background: `linear-gradient(160deg, ${shade(cat.color, 0.12)} 0%, ${cat.color} 55%, ${shade(cat.color, -0.18)} 100%)`,
+        background: "#1A1A1A",
         ...style,
       }}
     >
-      <svg
-        viewBox="0 0 100 160"
-        preserveAspectRatio="xMidYMid slice"
-        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-      >
-        <Art index={index} variant={variant} />
-      </svg>
+      <Img
+        src={reelSrc(img)}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: img.position,
+        }}
+      />
+      {tint > 0 ? (
+        <div style={{ position: "absolute", inset: 0, background: cat.color, opacity: tint }} />
+      ) : null}
       {chrome ? (
         <>
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background: "linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.32) 100%)",
+              background: "linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.5) 100%)",
             }}
           />
           <div
@@ -158,7 +116,7 @@ export const ReelCard: React.FC<Props> = ({
                 }}
               />
               <span style={{ fontWeight: 700, fontSize: 17 * scale }}>
-                {handle ?? `${cat.id}.daily`}
+                {handle ?? img.handle}
               </span>
             </div>
             <span
@@ -168,7 +126,8 @@ export const ReelCard: React.FC<Props> = ({
                 fontSize: 14 * scale,
                 padding: `${4 * scale}px ${10 * scale}px`,
                 borderRadius: 999,
-                background: "rgba(255,255,255,0.24)",
+                background: cat.color,
+                color: cat.onColor,
               }}
             >
               {cat.label}

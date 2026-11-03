@@ -261,7 +261,7 @@ export const HeroStage: React.FC = () => {
             boxShadow: "0 30px 60px -24px rgba(40,28,14,0.45)",
           }}
         >
-          <ReelCard index={0} width={cardW} height={cardH} handle="glow.lab" radius={22} variant={0} />
+          <ReelCard index={0} width={cardW} height={cardH} radius={22} variant={0} tint={progress(frame, T.echoCardToPie - 6, T.echoCardToPie + 6)} />
         </div>
       ) : null}
       {contrastLabels > 0 ? (

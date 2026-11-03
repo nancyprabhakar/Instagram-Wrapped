@@ -6,7 +6,7 @@ An animated product concept film, built with Remotion:
 The film runs inside a recreated Instagram session. The user taps a proposed **Your algorithm** tab (a pie-chart icon in the bottom navigation) and sees *What you watched*. They then swipe to *What you want more of*, drag the Beauty/Travel slice boundary, and apply the new mix to their feed.
 
 > Independent Instagram concept by Nancy Prabhakar · Sample data · Proposed feature.
-> Not affiliated with Instagram or Meta. All accounts, content and numbers are fictional.
+> Not affiliated with Instagram or Meta. All account names and numbers are fictional; Reel and post thumbnails are images supplied by the author.
 
 | Deliverable | Path |
 | --- | --- |
@@ -51,7 +51,7 @@ src/
     Typography.tsx   WATCH / WANT accents, "Wrapped" gradient wipe
     instagram/*      status bar, header, Stories, feed post, bottom nav,
                      "Your algorithm" header, legend, page dots, button, sheet
-    ReelCard.tsx     original abstract Reel artwork per category
+    ReelCard.tsx     Reel thumbnail card (photo, overlay, category tag, colour tint)
     TouchIndicator.tsx, Phone.tsx, SoundEffects.tsx
   scenes/
     PhoneStage.tsx   the continuous Instagram session (0–24 s)
@@ -65,6 +65,7 @@ scripts/
 public/
   fonts/             Inter (from @fontsource/inter, SIL OFL)
   sfx/               original synthesized tap / swipe / tick / chime
+  reels/             Reel / post thumbnails (mapped to categories in src/media.ts)
 ```
 
 ### Chart interaction
@@ -74,6 +75,10 @@ public/
 - Labels round the transferred amount rather than each value, so the displayed percentages also always add up to 100.
 - The touch indicator is placed with `polar()` at the boundary's current angle, so it rides the real edge.
 - `npm run check` verifies all of this on every frame of the drag. It also checks that the caption text matches the script word for word, in order.
+
+### Thumbnails
+
+`src/media.ts` maps each image in `public/reels/` to a category, crop position and fictional handle. To swap an image, drop a file into `public/reels/` and update that map. Variant 0 of each category is used in the Wrapped card fan; the Beauty hero (lip gloss) is the Reel the scroll pauses on and the card echoed at 28 s. As cards fly into the pie they fade to their category colour, so the colour story stays intact.
 
 ### Audio
 
